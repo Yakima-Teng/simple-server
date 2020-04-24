@@ -1,33 +1,20 @@
-# jMock
+# simple-server
 
-<p align="center">
-  <a href="https://npmcharts.com/compare/jmock?minimal=true">
-    <img src="https://img.shields.io/npm/dm/jmock.svg" alt="Downloads">
-  </a>
-  <a href="https://www.npmjs.com/package/jmock">
-    <img src="https://img.shields.io/npm/v/jmock.svg" alt="Version">
-  </a>
-  <a href="https://www.npmjs.com/package/jmock">
-    <img src="https://img.shields.io/npm/l/jmock.svg" alt="License">
-  </a>
-</p>
+> simple-server是一个使用NodeJS编写的简单服务，支持静态资源、请求转发、数据mock。非常适合在开发、测试环境使用。
 
-> jMock是一个用js书写的mock server，用于服务器端数据模拟，方便前端工程师独立于后端进行开发。支持跨域访问，支持post大文件（不会在硬盘上进行存储）。
+simple-server具有如下特点：
 
-
-本程序根据个人的实际使用情况在操作的简便性和功能的丰富性之间做了适当的取舍，“返回静态JSON数据”时不对请求方式（POST、GET这种）进行区分，只针对请求地址进行响应（因为同一个接口地址不同请求方式的情况个人项目中很少见）。如果想要根据根据请求方式进行区别响应，可采用“返回JS自定义数据”或“请求代理”的方式。
-
-适用于前端为http、https请求，后端返回json数据的场景。
+1. 集成mock服务（服务端数据模拟），即支持使用静态JSON文件，也支持返回JS动态生成的数据，支持高级拓展（如根据前端上行参数返回不同结果）；
+2. 默认支持跨域访问；
+3. 支持post传输大文件（不会在硬盘上进行存储）；
+4. 针对请求转发场景进行了日志优化，便于排查问题（由于目标场景是请求量不大的测试或者开发环境，所以日志被格式化便于阅读，若用于生产环境请稍加修改）。
+5. 集成了PM2支持，只要几个命令即可做到异常时自启动、配置/mock文件修改时自启动，开机自启动（开启自启不支持window系统），部署运维方便；
 
 说明：本文档中“配置文件”指的是config目录下的index.js文件。
-
-说明：服务器启动时会自动打开一个说明文档页面，若需取消，请修改配置文件中config.showReadMe的值为false。
 
 ## 截图
 
 ![](./screenshots/console.png)
-
-Established by Yakima Teng
 
 ## 安装
 
