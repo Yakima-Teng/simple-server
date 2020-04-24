@@ -1,0 +1,68 @@
+{
+  "name": "jmock",
+  "version": "0.0.7",
+  "description": "服务器端数据模拟工具，方便前端工程师独立于后端进行开发。该项目的目标是实现一个简单易用的前端数据模拟工具，支持自定义数据模拟、请求代理、跨域访问。目前只支持http/https请求，不支持websocket通讯协议。支持以命令行工具的方式进行使用。",
+  "main": "app.js",
+  "bin": {
+    "jmock": "bin/jmock",
+    "jmock-init": "bin/jmock-init",
+    "jmock-clean": "bin/jmock-clean",
+    "jmock-start": "bin/jmock-start"
+  },
+  "scripts": {
+    "start": "node --use-strict app.js",
+    "dev": "nodemon --use-strict app.js",
+    "build:lib": "nodemon --use-strict build/build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yakima-Teng/jmock.git"
+  },
+  "author": "Yakima",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Yakima-Teng/jmock/issues"
+  },
+  "homepage": "https://github.com/Yakima-Teng/jmock#readme",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "chalk": "^2.4.1",
+    "commander": "^2.15.1",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.5",
+    "download-git-repo": "^1.0.2",
+    "express": "^4.14.0",
+    "http-proxy-middleware": "^0.17.3",
+    "inquirer": "^5.2.0",
+    "markdown-it": "^8.2.2",
+    "metalsmith": "^2.3.0",
+    "mockjs": "^1.0.1-beta3",
+    "nodemon": "^1.11.0",
+    "opn": "^4.0.2",
+    "ora": "^2.1.0",
+    "request": "^2.87.0",
+    "rimraf": "^2.6.2",
+    "semver": "^5.5.0",
+    "serve-favicon": "^2.3.2",
+    "shelljs": "^0.8.2",
+    "stream-body": "^1.0.4",
+    "user-home": "^2.0.0",
+    "util": "^0.10.3",
+    "zlib": "^1.0.5"
+  },
+  "devDependencies": {
+    "eslint-friendly-formatter": "^4.0.1",
+    "gulp": "^4.0.0",
+    "gulp-connect": "^5.7.0",
+    "gulp-eslint": "^5.0.0",
+    "rollup": "^1.1.2",
+    "rollup-plugin-typescript": "^1.0.0",
+    "rollup-plugin-uglify": "^6.0.2",
+    "tslib": "^1.9.3",
+    "typescript": "^3.3.3"
+  }
+}
