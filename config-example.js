@@ -1,5 +1,5 @@
 const config = {
-    showReadMe: true, // 是否显示说明文档
+    showHelpDoc: true, // 是否显示项目帮助文档
     port: '3456',
     // 将public目录映射成为url中的对应路径
     public: '/static',

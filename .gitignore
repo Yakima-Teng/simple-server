@@ -36,8 +36,8 @@ jspm_packages
 # Optional REPL history
 .DS_Store
 .node_repl_history
-/config/index.js
-/public
-/mock
+
 .idea
-/temp-jmock-test
+/config.js
+/data
+/public

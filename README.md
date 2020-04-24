@@ -217,6 +217,10 @@ module.exports = config
 
 - 访问`/static`和访问`/static/index.html`实际请求的是同一个文件，因为程序设定的默认首页为index.html。
 
+### 显示项目说明文档
+
+启动本服务后，可通过访问`/help.html`来访问项目说明文档。若不需要项目说明文档，可以将配置文件中`config.showHelpDoc`的值改为false。
+
 ## License/许可
 
 MIT协议。免费开源，可以随意使用，但因使用而产生的问题请自行负责。
