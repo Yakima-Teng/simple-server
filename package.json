@@ -13,8 +13,8 @@
         "log": "pm2 log",
         "status": "pm2 status",
         "debug": "node $NODE_DEBUG_OPTION app.js",
-        "lint": "eslint *.js",
-        "lint:fix": "eslint --fix *.js"
+        "lint": "eslint *.js .*.js --ignore-pattern '!.eslintrc.js'",
+        "lint:fix": "eslint --fix *.js .*.js --ignore-pattern '!.eslintrc.js'"
     },
     "repository": {
         "type": "git",

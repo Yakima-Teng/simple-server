@@ -1,5 +1,5 @@
 module.exports = {
-    "extends": "airbnb",
+    extends: 'airbnb',
     rules: {
         indent: ['error', 4],
         semi: ['error', 'never'],
@@ -8,4 +8,4 @@ module.exports = {
         'func-names': ['off'],
         'jsx-a11y/href-no-hash': ['off'],
     },
-};
+}
