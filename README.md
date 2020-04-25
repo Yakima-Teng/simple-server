@@ -14,7 +14,13 @@ simple-server具有如下特点：
 
 ## 截图
 
+输出日志截图：
+
 ![console](./screenshots/console.png)
+
+应用状态截图（使用pm2部署，App名称为`simple-server-${config.port}`，便于知悉当前服务所占用的端口号）：
+
+![console](./screenshots/app-status.png)
 
 ## 项目部署
 
