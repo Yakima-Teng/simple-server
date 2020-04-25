@@ -111,45 +111,57 @@ Object.keys(config.proxyTable).forEach((context) => {
                 printLog(`header.${key}: ${proxyRes.headers[key]}`)
             }
             if (!isMedia) {
-                try {
-                    let bufferString = buffer.toString()
-                    if (req.url.indexOf('callback=') !== -1) {
-                        bufferString = bufferString.replace(/^.+\((.+)\)/, '$1') // 如果是JSONP请求，则日志里输出括号内的JSON文本即可
-                        printLog(`responseText: ${JSON.stringify(JSON.parse(bufferString), null, 2)}`)
-                    } else {
-                        printLog(`responseText: ${JSON.stringify(JSON.parse(buffer.toString()), null, 2)}`)
+                (async () => {
+                    const responseText = await new Promise((resolve, reject) => {
+                        // 将响应内容备份至本地（若为gzip或deflate压缩过的响应内容，在备份前先解压）
+                        const fileName = `${req.url.split('#')[0].split('?')[0].split(/^\//)[1].replace(/\//g, '-')}.json`
+                        const encoding = proxyHeaders['content-encoding']
+
+                        if (encoding === 'gzip') {
+                            zlib.gunzip(buffer, (err, decoded) => {
+                                if (err) {
+                                    printLog(err)
+                                    reject(err)
+                                    return
+                                }
+                                const stringDataToSave = decoded.toString()
+                                resolve(stringDataToSave)
+                                utils.saveProxyData(fileName, stringDataToSave)
+                            })
+                        } else if (encoding === 'deflate') {
+                            zlib.inflate(buffer, (err, decoded) => {
+                                if (err) {
+                                    printLog(err)
+                                    reject(err)
+                                    return
+                                }
+                                const stringDataToSave = decoded.toString()
+                                resolve(stringDataToSave)
+                                utils.saveProxyData(fileName, stringDataToSave)
+                            })
+                        } else {
+                            const stringDataToSave = buffer.toString()
+                            resolve(stringDataToSave)
+                            utils.saveProxyData(fileName, stringDataToSave)
+                        }
+                    })
+
+                    // 将响应内容进行输出
+                    try {
+                        let bufferString = responseText
+                        if (req.url.indexOf('callback=') !== -1) {
+                            bufferString = bufferString.replace(/^.+\((.+)\)/, '$1') // 如果是JSONP请求，则日志里输出括号内的JSON文本即可
+                            printLog(`responseText: ${JSON.stringify(JSON.parse(bufferString), null, 2)}`)
+                        } else {
+                            printLog(`responseText: ${JSON.stringify(JSON.parse(bufferString), null, 2)}`)
+                        }
+                    } catch (err) {
+                        printLog(`responseText: ${buffer.toString()}`)
                     }
-                } catch (err) {
-                    printLog(`responseText: ${buffer.toString()}`)
-                }
+                })()
             }
             printLog('************* response end *************')
             printLog('  ')
-
-            // 将响应内容备份至本地（若为gzip或deflate压缩过的响应内容，在备份前先解压）
-            if (!isMedia) {
-                const fileName = `${req.url.split('#')[0].split('?')[0].split(/^\//)[1].replace(/\//g, '-')}.json`
-                const encoding = proxyHeaders['content-encoding']
-                if (encoding === 'gzip') {
-                    zlib.gunzip(buffer, (err, decoded) => {
-                        if (err) {
-                            printLog(err)
-                            return
-                        }
-                        utils.saveProxyData(fileName, decoded.toString())
-                    })
-                } else if (encoding === 'deflate') {
-                    zlib.inflate(buffer, (err, decoded) => {
-                        if (err) {
-                            printLog(err)
-                            return
-                        }
-                        utils.saveProxyData(fileName, decoded.toString())
-                    })
-                } else {
-                    utils.saveProxyData(fileName, buffer.toString())
-                }
-            }
         })
     }
     app.use(proxyMiddleware(context, options))
