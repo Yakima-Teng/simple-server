@@ -1,5 +1,4 @@
 const config = {
-    showHelpDoc: true, // 是否显示项目帮助文档
     port: '3456',
     // 日志打印丰富度，normal会打印大量内容，simple只打印核心内容
     logLevel: 'simple',

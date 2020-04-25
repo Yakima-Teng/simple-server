@@ -1,63 +1,44 @@
 {
-    "name": "jmock",
+    "name": "simple-server",
     "version": "0.0.1",
     "description": "simple-server是一个使用NodeJS编写的简单服务，支持静态资源、请求转发、数据mock。非常适合在开发、测试环境使用。",
     "main": "app.js",
     "scripts": {
-        "start": "node --use-strict app.js",
-        "dev": "nodemon --use-strict app.js",
-        "build:lib": "nodemon --use-strict build/build.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "installDependencies": "npm i -g pm2 && npm i",
+        "start": "pm2 start ecosystem.config.js",
+        "restart": "pm2 restart ecosystem.config.js",
+        "delete": "pm2 delete ecosystem.config.js",
+        "stop": "pm2 stop ecosystem.config.js",
+        "getShellUsedToStartProjectAfterReboot": "pm2 startup",
+        "log": "pm2 log",
+        "status": "pm2 status",
+        "debug": "node $NODE_DEBUG_OPTION app.js"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Yakima-Teng/jmock.git"
+        "url": "git+https://github.com/Yakima-Teng/simple-server.git"
     },
     "author": "Yakima",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/Yakima-Teng/jmock/issues"
+        "url": "https://github.com/Yakima-Teng/simple-server/issues"
     },
-    "homepage": "https://github.com/Yakima-Teng/jmock#readme",
+    "homepage": "https://github.com/Yakima-Teng/simple-server#readme",
     "engines": {
-    "node": ">=4.0.0"
+        "node": ">=9.2.1"
     },
     "dependencies": {
         "body-parser": "^1.15.2",
-        "chalk": "^2.4.1",
-        "commander": "^2.15.1",
         "cookie-parser": "^1.4.3",
         "cors": "^2.8.5",
-        "download-git-repo": "^1.0.2",
         "express": "^4.14.0",
         "http-proxy-middleware": "^0.17.3",
-        "inquirer": "^5.2.0",
         "markdown-it": "^8.2.2",
-        "metalsmith": "^2.3.0",
         "mockjs": "^1.0.1-beta3",
-        "nodemon": "^1.11.0",
-        "opn": "^4.0.2",
-        "ora": "^2.1.0",
-        "request": "^2.87.0",
-        "rimraf": "^2.6.2",
-        "semver": "^5.5.0",
         "serve-favicon": "^2.3.2",
-        "shelljs": "^0.8.2",
         "stream-body": "^1.0.4",
-        "user-home": "^2.0.0",
-        "util": "^0.10.3",
         "uuid": "^7.0.3",
         "zlib": "^1.0.5"
     },
-    "devDependencies": {
-        "eslint-friendly-formatter": "^4.0.1",
-        "gulp": "^4.0.0",
-        "gulp-connect": "^5.7.0",
-        "gulp-eslint": "^5.0.0",
-        "rollup": "^1.1.2",
-        "rollup-plugin-typescript": "^1.0.0",
-        "rollup-plugin-uglify": "^6.0.2",
-        "tslib": "^1.9.3",
-        "typescript": "^3.3.3"
-    }
+    "devDependencies": {}
 }

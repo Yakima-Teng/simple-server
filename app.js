@@ -7,7 +7,6 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const proxyMiddleware = require('http-proxy-middleware')
 const md = new require('markdown-it')()
-const opn = require('opn')
 const body = require('stream-body')
 const zlib = require('zlib')
 const cors = require('cors')
@@ -170,7 +169,7 @@ app.use(bodyParser.urlencoded({
 
 app.use(cookieParser())
 
-app.get('/readme', (req, res, next) => {
+app.get('/help', (req, res, next) => {
     fs.readFile(path.join(__dirname, 'README.md'), (err, data) => {
         if (err) {
             console.log(err)
@@ -318,10 +317,6 @@ function onListening () {
         : 'port ' + addr.port
 
     console.log(`[MAIN] Listening on ${bind}`)
-
-    if (config.showReadMe) {
-        opn(`http://localhost:${config.port}/readme`)
-    }
 }
 
 // translate '/a/b-d/c#d?q=hello' to 'a-b-d-c'

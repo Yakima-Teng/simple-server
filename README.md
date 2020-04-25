@@ -30,27 +30,29 @@ npm run installDependencies
 
 ***请先将项目根目录的config-example.js文件重命名为config.js文件，然后根据实际需要修改对应配置，然后再进行后续操作（配置项中各参数的说明见后文）***
 
-在项目根目录下执行：
+注：以下命令需在项目根目录下执行，其中部分命令可视为`pm2`对应命令的别名，可以在任意目录下通过直接使用`pm2`命令达成。
 
 ```bash
-# 初次启动
+# 初次启动（在项目根目录下执行）
 npm run start
 
-# 重启
+# 重启（在项目根目录下执行）
 npm run restart
 ```
 
 3、开启自启动
 
-执行下述命令，pm2会给出一串脚本命令，在终端中复制粘贴该命令并回车执行即可。
+执行下述命令，pm2会给出一串脚本命令，在终端中复制粘贴该命令并回车执行即可（有时候会直接执行成功然后告诉你执行成功了，这时候就不用再复制命令手动去执行了）。
 
 ```bash
+# 在项目根目录下执行
 npm run getShellUsedToStartProjectAfterReboot
 ```
 
 4、查看项目日志
 
 ```bash
+# 在项目根目录下执行
 npm run log
 ```
 
@@ -59,12 +61,14 @@ npm run log
 停止项目：
 
 ```bash
+# 在项目根目录下执行
 npm run stop
 ```
 
 从PM2项目清单中删除项目：
 
 ```bash
+# 在项目根目录下执行
 npm run delete
 ```
 
@@ -245,9 +249,9 @@ module.exports = config
 
 在上述配置规则下，发至本服务的路径精确匹配`/a`的请求将被301永久重定向到`/b`请求；发至本附的路径精确匹配`/vendor/assets/zepto.min.js`的请求将被302临时重定向到`http://localhost:3000/vendor/assets/zepto.min.js?v=20191122`。
 
-### 显示项目说明文档
+### 在线访问项目说明文档
 
-启动本服务后，可通过访问`/help.html`来访问项目说明文档。若不需要项目说明文档，可以将配置文件中`config.showHelpDoc`的值改为`false`。
+启动本服务后，可通过访问`/help`来访问项目说明文档。
 
 ## License/许可
 
