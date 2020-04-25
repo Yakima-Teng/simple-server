@@ -30,7 +30,6 @@ utils.manufactureInfrastructure([ // 若无对应目录则创建之
 // allow cross-origin ajax request
 app.use(cors())
 app.all('*', (req, res, next) => {
-    printLog(`[${req.method}] ${req.url}`) // 打印所有原始请求
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
     res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
@@ -87,7 +86,7 @@ Object.keys(config.proxyTable).forEach((context) => {
             printLog(`[${req.method}] ${req.url.replace(/\?.*$/, '')}`)
             printLog(`requestId: ${req.simpleServer.requestId}`)
             shouldPrintMoreInfo && printLog(`httpVersion: ${proxyRes.httpVersion}`) // eslint-disable-line no-unused-expressions
-            shouldPrintMoreInfo && printLog(`consume time: ${consumedTime}ms`) // eslint-disable-line no-unused-expressions
+            printLog(`consume time: ${consumedTime}ms`) // eslint-disable-line no-unused-expressions
             shouldPrintMoreInfo && Object.keys(proxyRes.headers).forEach((key) => { // eslint-disable-line no-unused-expressions, max-len
                 printLog(`header.${key}: ${proxyRes.headers[key]}`)
             })
@@ -172,6 +171,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser())
 
 app.get('/help', (req, res) => {
+    printLog(`[${req.method}] ${req.url}`) // 打印原始请求
     fs.readFile(path.join(__dirname, 'README.md'), (err, data) => {
         if (err) {
             printLog(err)
@@ -185,6 +185,7 @@ app.get('/help', (req, res) => {
 // 301 moved permanently
 Object.keys(config.redirect.movedPermanently).forEach((key) => {
     app.all(key, (req, res) => {
+        printLog(`[${req.method}] ${req.url}`) // 打印原始请求
         const targetLocation = config.redirect.movedPermanently[key]
         res.redirect(301, targetLocation)
     })
@@ -193,6 +194,7 @@ Object.keys(config.redirect.movedPermanently).forEach((key) => {
 // 302 moved temporarily
 Object.keys(config.redirect.movedTemporarily).forEach((key) => {
     app.all(key, (req, res) => {
+        printLog(`[${req.method}] ${req.url}`) // 打印原始请求
         const targetLocation = config.redirect.movedTemporarily[key]
         res.redirect(302, targetLocation)
     })
@@ -220,6 +222,7 @@ config.jsonTable.forEach((context) => {
 
     // 路由配置
     app.all(context, (req, res) => {
+        printLog(`[${req.method}] ${req.url}`) // 打印原始请求
         fs.readFile(filePathAndName, (err, data) => {
             if (err) {
                 res.json(err)
@@ -252,6 +255,7 @@ config.customTable.forEach((context) => {
 
     // 路由配置
     app.all(context, (req, res) => {
+        printLog(`[${req.method}] ${req.url}`) // 打印原始请求
         const content = require(filePathAndName)(req) // eslint-disable-line import/no-dynamic-require, global-require, max-len
         res.json(content)
     })

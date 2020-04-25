@@ -66,16 +66,22 @@ exports.saveProxyData = function (fileName, fileData) {
     fs.access(filePathAndName, fs.F_OK, (err) => {
         if (err) {
             if (err.code === 'ENOENT') {
-                fs.writeFile(filePathAndName, (() => {
+                const stringifyFileData = (() => {
                     try {
                         return JSON.stringify(JSON.parse(fileData), null, 4)
                     } catch (e) {
+                        if (e.message.indexOf('Unexpected token < in JSON') !== -1) {
+                            return null
+                        }
                         printLog(e)
-                        return ''
+                        return null
                     }
-                })(), (err2) => {
-                    if (err2) { printLog(err2) }
-                })
+                })()
+                if (stringifyFileData !== null) {
+                    fs.writeFile(filePathAndName, stringifyFileData, (err2) => {
+                        if (err2) { printLog(err2) }
+                    })
+                }
             } else {
                 printLog(err)
             }
