@@ -13,7 +13,7 @@ const cors = require('cors')
 const uuid = require('uuid')
 const config = require('./config')
 
-const shouldPrintMoreInfo = logLevel === 'normal'
+const shouldPrintMoreInfo = config.logLevel === 'normal'
 
 const app = express()
 
