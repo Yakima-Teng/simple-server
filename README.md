@@ -6,10 +6,11 @@ simple-server具有如下特点：
 
 1. 集成mock服务（服务端数据模拟），即支持使用静态JSON文件，也支持返回JS动态生成的数据，支持高级拓展（如根据前端上行参数自定义返回不同结果）；
 2. 默认支持跨域访问；
-3. 支持post传输大文件（不会在硬盘上进行存储）；
+3. 支持post传输最大100M的大文件（100M足够一般的开发、测试需求了。请注意，如果使用nginx等其他服务代理时，这些服务本身也有文件大小限制的，没记错的话nginx默认限制1M，tomcat默认限制2M，最终能支持的大小是由所有这些服务中的下限决定的）；
 4. 针对请求转发场景进行了日志优化，便于排查问题（由于目标场景是请求量不大的测试或者开发环境，所以日志被格式化便于阅读，若用于生产环境请稍加修改）。
 5. 集成了PM2支持，只要几个命令即可做到异常时自启动、配置/mock文件修改时自启动，开机自启动（开启自启不支持window系统），部署运维方便；
 6. 可作为静态文件服务器。
+7. 支持解析gzip或deflate压缩过的响应内容。
 
 ## 截图
 
@@ -115,6 +116,11 @@ module.exports = config
 
 说明：程序会自动对代理请求返回的结果进行备份，备份目录为/data/mock/proxy，生成的文件名是根据请求地址自动生成的。大部分时候不需要搭理这些备份文件。但是如果你正好也同时使用用本服务做mock服务，则可以拷贝这些文件作为mock数据文件，具体用法见后文描述。
 
+本项目针对请求代理/转发的场景，针对性的进行了日志输出的优化，可以通过修改`config.logLevel`的值来切换不同的日志打印丰富度，目前支持以下两个枚举值：
+
+1. `simple`：仅打印核心内容，日志量少，有可能缺少排查问题的关键信息。
+2. `normal`: 打印内容丰富，排查问题时信息更丰富，但相对的，日志量会大很多。
+
 ### 返回JSON静态数据
 
 修改配置文件中的`config.jsonTable`字段即可。示例配置如下：
@@ -194,7 +200,7 @@ const returnRes = (req) => Mock.mock({
 module.exports = returnRes
 ```
 
-### 设置静态文件根路径的访问地址
+### 设置静态文件服务
 
 将您的前端文件或其他静态文件放置于`/public`目录下，然后修改配置文件中的`config.public`，该值将与`/public`目录直接映射。config.public的默认值为"/test"，即"/test/index.html"将会访问public目录下的index.html文件。示例配置如下：
 
@@ -213,7 +219,31 @@ module.exports = config
 
 说明：
 
-- 访问`/static`和访问`/static/index.html`实际请求的是同一个文件，因为程序设定的默认首页为`index.html`。
+- 在上述配置下，请求`/static`和请求`/static/index.html`实际访问的是同一个文件，因为程序设定的默认首页为`index.html`。
+
+### 重定向
+
+可通过修改配置文件中的`config.redirect`字段设置重定向规则。示例如下：
+
+```javascript
+const config = {
+    // ...
+    redirect: {
+        movedPermanently: { // 301 redirect 永久重定向
+            '/a': '/b',
+        },
+        movedTemporarily: { // 302 redirect 临时重定向
+            '/vendor/assets/zepto.min.js': 'http://localhost:3000/vendor/assets/zepto.min.js?v=20191122',
+        },
+    },
+    // ...
+}
+module.exports = config
+```
+
+如上配置对应的解释描述如下：
+
+在上述配置规则下，发至本服务的路径精确匹配`/a`的请求将被301永久重定向到`/b`请求；发至本附的路径精确匹配`/vendor/assets/zepto.min.js`的请求将被302临时重定向到`http://localhost:3000/vendor/assets/zepto.min.js?v=20191122`。
 
 ### 显示项目说明文档
 

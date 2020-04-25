@@ -52,6 +52,7 @@
     "stream-body": "^1.0.4",
     "user-home": "^2.0.0",
     "util": "^0.10.3",
+    "uuid": "^7.0.3",
     "zlib": "^1.0.5"
   },
   "devDependencies": {

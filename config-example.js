@@ -1,6 +1,8 @@
 const config = {
     showHelpDoc: true, // 是否显示项目帮助文档
     port: '3456',
+    // 日志打印丰富度，normal会打印大量内容，simple只打印核心内容
+    logLevel: 'simple',
     // 将public目录映射成为url中的对应路径
     public: '/static',
     // 代理请求，将请求转发至其他服务器，然后返回相应的内容
@@ -26,11 +28,12 @@ const config = {
     customTable: [
         '/apis/custom'
     ],
+    // 重定向
     redirect: {
-        movedPermanently: { // 301 redirect
+        movedPermanently: { // 301 redirect 永久重定向
             '/a': '/b',
         },
-        movedTemporarily: { // 302 redirect
+        movedTemporarily: { // 302 redirect 临时重定向
             '/vendor/assets/zepto.min.js': 'http://localhost:3000/vendor/assets/zepto.min.js?v=20191122',
         },
     },
