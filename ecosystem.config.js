@@ -12,12 +12,12 @@ module.exports = {
             watch: [
                 'config.js',
                 'app.js',
-                'data/mock/custom'
+                'data/mock/custom',
             ],
             watch_delay: 1000,
             ignore_watch: [
                 'node_modules',
-                'logs'
+                'logs',
             ],
             max_memory_restart: '200M',
             env: { // pm2 start ecosystem.config.js

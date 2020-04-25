@@ -12,7 +12,9 @@
         "getShellUsedToStartProjectAfterReboot": "pm2 startup",
         "log": "pm2 log",
         "status": "pm2 status",
-        "debug": "node $NODE_DEBUG_OPTION app.js"
+        "debug": "node $NODE_DEBUG_OPTION app.js",
+        "lint": "eslint *.js",
+        "lint:fix": "eslint --fix *.js"
     },
     "repository": {
         "type": "git",
@@ -40,5 +42,12 @@
         "uuid": "^7.0.3",
         "zlib": "^1.0.5"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "eslint": "^4.19.1",
+        "eslint-config-airbnb": "^15.1.0",
+        "eslint-plugin-import": "^2.20.2",
+        "eslint-plugin-jsx-a11y": "^6.2.3",
+        "eslint-plugin-react": "^7.19.0",
+        "eslint-plugin-react-hooks": "^2.5.1"
+    }
 }

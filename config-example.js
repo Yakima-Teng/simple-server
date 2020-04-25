@@ -9,7 +9,7 @@ const config = {
         '/apis/proxy-test': {
             target: 'http://test.api.com',
             changeOrigin: true,
-            pathRewrite (path, req) {
+            pathRewrite (path, req) { // eslint-disable-line no-unused-vars
                 return path.replace('/apis/proxy-test', '/apis/proxy')
             },
         },
@@ -21,11 +21,11 @@ const config = {
     },
     // 读取固定的JSON文件内容作为返回值
     jsonTable: [
-        '/apis/json'
+        '/apis/json',
     ],
     // 读取用户自定义的内容，可以在此处使用第三方数据模拟工具（默认已经预装了mockjs模块，开箱即用）
     customTable: [
-        '/apis/custom'
+        '/apis/custom',
     ],
     // 重定向
     redirect: {
