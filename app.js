@@ -182,6 +182,12 @@ app.use(bodyParser.urlencoded({
 
 app.use(cookieParser())
 
+// 纯粹打印日志，不含其它逻辑
+app.get('/report', (req, res) => {
+    printLog(`[${req.method}] ${req.url}`) // 打印原始请求
+    res.send(null)
+})
+
 app.get('/help', (req, res) => {
     printLog(`[${req.method}] ${req.url}`) // 打印原始请求
     fs.readFile(path.join(__dirname, 'README.md'), (err, data) => {
