@@ -2,7 +2,22 @@ const config = {
     port: '3456',
     // 日志打印丰富度，normal会打印大量内容，simple只打印核心内容
     logLevel: 'simple',
-    // 将public目录映射成为url中的对应路径
+    /**
+     * 将public目录映射成为url中的对应路径
+     * 
+     * 注意：如果使用nginx进行代理，则可能不会走express的静态服务，这时候需要在nginx配置如下的配置：
+     * 
+     * location ^~ /static/ {
+     *   allow all;
+     *   alias /www/wwwroot/www.example.com/simple-server/public/;
+     * }
+     * 
+     * 出于安全考虑，还需要把simple-server源码目录的访问权限给屏蔽掉
+     * location ~* \.(js|md)$ {
+     *   root /www/wwwroot/log.orzzone.com/simple-server/;
+     *   deny all;
+     * }
+     */
     public: '/static',
     // 代理请求，将请求转发至其他服务器，然后返回相应的内容
     proxyTable: {
