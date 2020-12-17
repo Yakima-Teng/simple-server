@@ -27,6 +27,9 @@ utils.manufactureInfrastructure([ // 若无对应目录则创建之
     'data/mock/proxy',
 ])
 
+// 如果使用了nginx等进行代理，则放开下面的注释
+// app.enable('trust proxy')
+
 // allow cross-origin ajax request
 app.use(cors())
 app.all('*', (req, res, next) => {
