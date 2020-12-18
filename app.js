@@ -31,11 +31,28 @@ utils.manufactureInfrastructure([ // 若无对应目录则创建之
 // app.enable('trust proxy')
 
 // allow cross-origin ajax request
-app.use(cors())
-app.all('*', (req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
+const whiteList = [
+    'http://101.132.121.117', // E鹿通测试账号
+]
+const crsOptions = {
+    origin (origin, callback) {
+        if (whiteList.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    optionsSuccessStatus: 200,
+    preflightContinue: true,
+    credentials: true,
+}
+app.options('*', cors(crsOptions))
+// app.use(cors())
+app.all('*', cors(crsOptions), (req, res, next) => {
+    // res.header('Access-Control-Allow-Origin', 'http://101.132.121.117' || '*')
+    // res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, token')
+    // res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
+    // res.header('Access-Control-Allow-Credentials', 'true')
     next()
 })
 
@@ -319,16 +336,16 @@ server.on('error', (error) => {
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
-    case 'EACCES':
-        console.error(`${bind} requires elevated privileges`)
-        process.exit(1)
-        break
-    case 'EADDRINUSE':
-        console.error(`${bind} is already in use`)
-        process.exit(1)
-        break
-    default:
-        throw error
+        case 'EACCES':
+            console.error(`${bind} requires elevated privileges`)
+            process.exit(1)
+            break
+        case 'EADDRINUSE':
+            console.error(`${bind} is already in use`)
+            process.exit(1)
+            break
+        default:
+            throw error
     }
 }) // eslint-disable-line no-use-before-define
 
