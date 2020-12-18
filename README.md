@@ -259,6 +259,31 @@ module.exports = config
 
 启动本服务后，可通过访问`/help`来访问项目说明文档。
 
+## 使用nginx等做反向代理
+
+如果使用nginx进行代理，则可能不会走express的静态服务，这时候需要在nginx配置类似下面这样的配置（假定config.public配的是`static`）：
+
+```default
+location ^~ /static/ {
+  allow all;
+  alias /www/wwwroot/www.example.com/simple-server/public/;
+}
+
+location ^~ /screenshots/ {
+  allow all;
+  alias /www/wwwroot/www.example.com/simple-server/screenshots/;
+}
+```
+
+然后为了安全起见，我们并不希望simple-server下的服务端源码被用户访问到，所以还需要增加这样的配置（示例里是禁止访问markdown文件和js文件，不过这不会影响上面的配置，即：public和screenshots下面的js和markdown文件不受影响，仍能正常访问）：
+
+```default
+location ~* \.(js|md)$ {
+  root /www/wwwroot/www.example.com/simple-server/;
+  deny all;
+}
+```
+
 ## License/许可
 
 MIT协议。免费开源，可以随意使用，但因使用而产生的问题请自行负责。
