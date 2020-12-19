@@ -31,14 +31,12 @@ utils.manufactureInfrastructure([ // 若无对应目录则创建之
 // app.enable('trust proxy')
 
 // allow cross-origin ajax request
-const whiteList = [
-    'http://101.132.121.117', // E鹿通测试账号
-]
 const crsOptions = {
     origin (origin, callback) {
-        if (whiteList.indexOf(origin) !== -1) {
+        if (config.corsConfig.domainWhiteList.indexOf(origin) !== -1 || origin === undefined) {
             callback(null, true)
         } else {
+            // 如果origin不在白名单中，且非undefined，都会走到这里
             callback(new Error('Not allowed by CORS'))
         }
     },

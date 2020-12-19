@@ -51,6 +51,12 @@ const config = {
             '/vendor/assets/zepto.min.js': 'http://localhost:3000/vendor/assets/zepto.min.js?v=20191122',
         },
     },
+    // 跨域配置
+    corsConfig: {
+        domainWhiteList: [ // 跨域请求白名单（名单中的ip/域名下的页面允许跨域请求，无端口限制）
+            'http://localhost', // 本地开发
+        ],
+    },
 }
 
 module.exports = config
