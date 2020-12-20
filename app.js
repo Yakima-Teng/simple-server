@@ -122,7 +122,7 @@ Object.keys(config.proxyTable).forEach((context) => {
                 proxyRes.headers['content-type'].indexOf('video') !== -1 ||
                 proxyRes.headers['content-type'].indexOf('audio') !== -1 ||
                 proxyRes.headers['content-type'].indexOf('audio') !== -1 ||
-                proxyRes.headers['content-type'].indexOf('application') !== -1
+                (proxyRes.headers['content-type'].indexOf('application') !== -1 && proxyRes.headers['content-type'].indexOf('application/json') === -1)
             )
             if (isMedia && !shouldPrintMoreInfo) {
                 const key = 'content-type'
@@ -162,7 +162,6 @@ Object.keys(config.proxyTable).forEach((context) => {
                         utils.saveProxyData(fileName, stringDataToSave)
                     }
                 })
-
                 // 将响应内容进行输出
                 try {
                     let bufferString = responseText
@@ -173,6 +172,7 @@ Object.keys(config.proxyTable).forEach((context) => {
                         printLog(`responseText: ${JSON.stringify(JSON.parse(bufferString), null, 2)}`)
                     }
                 } catch (err) {
+                    console.log(err)
                     printLog(`responseText: ${buffer.toString()}`)
                 }
             }
