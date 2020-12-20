@@ -54,7 +54,7 @@ const config = {
     // 跨域配置
     corsConfig: {
         domainWhiteList: [ // 跨域请求白名单（名单中的ip/域名下的页面允许跨域请求，无端口限制）
-            'http://localhost', // 本地开发
+            'http://localhost:3000', // 本地开发
         ],
     },
 }

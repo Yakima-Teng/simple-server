@@ -95,7 +95,7 @@ Object.keys(config.proxyTable).forEach((context) => {
         proxyRes.on('data', (chunk) => {
             chunks.push(chunk)
         })
-        proxyRes.on('end', () => {
+        proxyRes.on('end', async () => {
             const buffer = Buffer.concat(chunks)
 
             const consumedTime = +new Date() - req.simpleServer.startTime // 从发起请求到响应结束的耗时，单位毫秒
@@ -129,54 +129,52 @@ Object.keys(config.proxyTable).forEach((context) => {
                 printLog(`header.${key}: ${proxyRes.headers[key]}`)
             }
             if (!isMedia) {
-                (async () => {
-                    const responseText = await new Promise((resolve, reject) => {
-                        // 将响应内容备份至本地（若为gzip或deflate压缩过的响应内容，在备份前先解压）
-                        const fileName = `${req.url.split('#')[0].split('?')[0].split(/^\//)[1].replace(/\//g, '-')}.json`
-                        const encoding = proxyHeaders['content-encoding']
+                const responseText = await new Promise((resolve, reject) => {
+                    // 将响应内容备份至本地（若为gzip或deflate压缩过的响应内容，在备份前先解压）
+                    const fileName = `${req.url.split('#')[0].split('?')[0].split(/^\//)[1].replace(/\//g, '-')}.json`
+                    const encoding = proxyHeaders['content-encoding']
 
-                        if (encoding === 'gzip') {
-                            zlib.gunzip(buffer, (err, decoded) => {
-                                if (err) {
-                                    printLog(err)
-                                    reject(err)
-                                    return
-                                }
-                                const stringDataToSave = decoded.toString()
-                                resolve(stringDataToSave)
-                                utils.saveProxyData(fileName, stringDataToSave)
-                            })
-                        } else if (encoding === 'deflate') {
-                            zlib.inflate(buffer, (err, decoded) => {
-                                if (err) {
-                                    printLog(err)
-                                    reject(err)
-                                    return
-                                }
-                                const stringDataToSave = decoded.toString()
-                                resolve(stringDataToSave)
-                                utils.saveProxyData(fileName, stringDataToSave)
-                            })
-                        } else {
-                            const stringDataToSave = buffer.toString()
+                    if (encoding === 'gzip') {
+                        zlib.gunzip(buffer, (err, decoded) => {
+                            if (err) {
+                                printLog(err)
+                                reject(err)
+                                return
+                            }
+                            const stringDataToSave = decoded.toString()
                             resolve(stringDataToSave)
                             utils.saveProxyData(fileName, stringDataToSave)
-                        }
-                    })
-
-                    // 将响应内容进行输出
-                    try {
-                        let bufferString = responseText
-                        if (req.url.indexOf('callback=') !== -1) {
-                            bufferString = bufferString.replace(/^.+\((.+)\)/, '$1') // 如果是JSONP请求，则日志里输出括号内的JSON文本即可
-                            printLog(`responseText: ${JSON.stringify(JSON.parse(bufferString), null, 2)}`)
-                        } else {
-                            printLog(`responseText: ${JSON.stringify(JSON.parse(bufferString), null, 2)}`)
-                        }
-                    } catch (err) {
-                        printLog(`responseText: ${buffer.toString()}`)
+                        })
+                    } else if (encoding === 'deflate') {
+                        zlib.inflate(buffer, (err, decoded) => {
+                            if (err) {
+                                printLog(err)
+                                reject(err)
+                                return
+                            }
+                            const stringDataToSave = decoded.toString()
+                            resolve(stringDataToSave)
+                            utils.saveProxyData(fileName, stringDataToSave)
+                        })
+                    } else {
+                        const stringDataToSave = buffer.toString()
+                        resolve(stringDataToSave)
+                        utils.saveProxyData(fileName, stringDataToSave)
                     }
-                })()
+                })
+
+                // 将响应内容进行输出
+                try {
+                    let bufferString = responseText
+                    if (req.url.indexOf('callback=') !== -1) {
+                        bufferString = bufferString.replace(/^.+\((.+)\)/, '$1') // 如果是JSONP请求，则日志里输出括号内的JSON文本即可
+                        printLog(`responseText: ${JSON.stringify(JSON.parse(bufferString), null, 2)}`)
+                    } else {
+                        printLog(`responseText: ${JSON.stringify(JSON.parse(bufferString), null, 2)}`)
+                    }
+                } catch (err) {
+                    printLog(`responseText: ${buffer.toString()}`)
+                }
             }
             printLog('************* response end *************')
             printLog('  ')
