@@ -172,7 +172,6 @@ Object.keys(config.proxyTable).forEach((context) => {
                         printLog(`responseText: ${JSON.stringify(JSON.parse(bufferString), null, 2)}`)
                     }
                 } catch (err) {
-                    console.log(err)
                     printLog(`responseText: ${buffer.toString()}`)
                 }
             }
