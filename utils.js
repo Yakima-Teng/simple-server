@@ -4,8 +4,12 @@ const path = require('path')
 function printLog (text) {
     console.log(text) // eslint-disable-line
 }
-
 exports.printLog = printLog
+
+function printError (text) {
+    console.error(text)
+}
+exports.printError = printError
 
 // 代码来源：https://github.com/joehewitt/mkdir/blob/master/lib/mkdir.js
 function makePathSync (dirPath, mode) {
@@ -68,6 +72,9 @@ exports.saveProxyData = function (fileName, fileData) {
             if (err.code === 'ENOENT') {
                 const stringifyFileData = (() => {
                     try {
+                        if (fileData === '') {
+                            return fileData
+                        }
                         if (/^\S+\(.+\)$/.test(fileData)) {
                             // 如果是JSONP请求，则日志里输出括号内的JSON文本即可
                             fileData = fileData.replace(/^.+\((.+)\)/, '$1') // eslint-disable-line no-param-reassign

@@ -17,6 +17,7 @@ const utils = require('./utils')
 
 const shouldPrintMoreInfo = config.logLevel === 'normal'
 const printLog = utils.printLog
+const printError = utils.printError
 
 const app = express()
 
@@ -48,6 +49,7 @@ app.options('*', cors(crsOptions))
 // app.use(cors())
 app.all('*', cors(crsOptions), (req, res, next) => {
     // res.header('Access-Control-Allow-Origin', 'http://101.132.121.117' || '*')
+    // eslint-disable-next-line
     // res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, token')
     // res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
     // res.header('Access-Control-Allow-Credentials', 'true')
@@ -62,6 +64,9 @@ Object.keys(config.proxyTable).forEach((context) => {
     }
     options.proxyTimeout = 30000 // 30ms超时，一般足够了
     options.onProxyReq = (proxyReq, req) => {
+        Object.keys(req.headers).forEach((key) => {
+            proxyReq.setHeader(key, req.headers[key])
+        })
         req.simpleServer = { // 在req.simpleServer对象上挂载我们自定义的数据
             startTime: +new Date(),
             requestId: uuid.v1(), // requestId的作用是用来关联请求和对应的响应
@@ -89,7 +94,10 @@ Object.keys(config.proxyTable).forEach((context) => {
         printLog('************* request end *************')
         printLog('  ')
     }
-    options.onProxyRes = (proxyRes, req) => {
+    options.onProxyRes = (proxyRes, req, res) => {
+        Object.keys(proxyRes.headers).forEach((key) => {
+            res.append(key, proxyRes.headers[key])
+        })
         const proxyHeaders = proxyRes.headers
         const chunks = []
         proxyRes.on('data', (chunk) => {
@@ -165,7 +173,9 @@ Object.keys(config.proxyTable).forEach((context) => {
                 // 将响应内容进行输出
                 try {
                     let bufferString = responseText
-                    if (req.url.indexOf('callback=') !== -1) {
+                    if (bufferString === '') {
+                        printLog('responseText: [空字符串]')
+                    } else if (req.url.indexOf('callback=') !== -1) {
                         bufferString = bufferString.replace(/^.+\((.+)\)/, '$1') // 如果是JSONP请求，则日志里输出括号内的JSON文本即可
                         printLog(`responseText: ${JSON.stringify(JSON.parse(bufferString), null, 2)}`)
                     } else {
@@ -330,18 +340,18 @@ server.on('error', (error) => {
         : `Port ${config.port}`
 
     // handle specific listen errors with friendly messages
-    switch (error.code) {
-        case 'EACCES':
-            console.error(`${bind} requires elevated privileges`)
-            process.exit(1)
-            break
-        case 'EADDRINUSE':
-            console.error(`${bind} is already in use`)
-            process.exit(1)
-            break
-        default:
-            throw error
+    const errorCode = error.code
+    if (errorCode === 'EACCES') {
+        printError(`${bind} requires elevated privileges`)
+        process.exit(1)
+        return
     }
+    if (errorCode === 'EADDRINUSE') {
+        printError(`${bind} is already in use`)
+        process.exit(1)
+        return
+    }
+    throw error
 }) // eslint-disable-line no-use-before-define
 
 server.on('listening', () => {
